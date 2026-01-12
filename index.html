@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="個人記帳 PWA 應用程式">
+    <meta name="theme-color" content="#A8D5E2">
+    <title>個人記帳</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google OAuth 2.0 和 Drive API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header>
+            <h1>💰 個人記帳</h1>
+            <div id="auth-status" class="auth-status">
+                <button id="login-btn" class="btn btn-primary">登入 Google</button>
+                <div id="user-info" class="user-info" style="display: none;">
+                    <span id="user-name"></span>
+                    <button id="logout-btn" class="btn btn-secondary">登出</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 新增記帳表單 -->
+        <section class="form-section">
+            <h2>新增記帳</h2>
+            <form id="ledger-form">
+                <div class="form-group">
+                    <label for="date">日期：</label>
+                    <input type="date" id="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">分類：</label>
+                    <select id="category" required>
+                        <option value="">請選擇分類</option>
+                        <option value="餐飲">餐飲</option>
+                        <option value="交通">交通</option>
+                        <option value="購物">購物</option>
+                        <option value="醫療">醫療</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>支付方式：</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="payment" value="現金" checked>
+                            <span>現金</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="payment" value="信用卡">
+                            <span>信用卡</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">💰 金額：</label>
+                    <div class="amount-input-wrapper">
+                        <span class="currency-symbol">NT$</span>
+                        <input type="text" id="amount" inputmode="decimal" placeholder="0" required>
+                    </div>
+                    <small class="hint">直接輸入金額，例如：500 或 1,500</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">備註：</label>
+                    <textarea id="note" rows="3" placeholder="選填"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">新增記帳</button>
+            </form>
+        </section>
+
+        <!-- 統計表匯出 -->
+        <section class="export-section">
+            <h2>統計表匯出</h2>
+            <div class="export-form">
+                <div class="form-group">
+                    <label for="start-date">開始日期：</label>
+                    <input type="date" id="start-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="end-date">結束日期：</label>
+                    <input type="date" id="end-date" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" id="export-btn" class="btn btn-primary btn-block">產生統計表並下載 CSV</button>
+                    <button type="button" id="export-drive-btn" class="btn btn-secondary btn-block" style="display: none;">上傳統計表到 Google Drive</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 記帳清單 -->
+        <section class="list-section">
+            <h2>記帳清單</h2>
+            <div id="stats" class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">總支出：</span>
+                    <span id="total-expense" class="stat-value expense">$0</span>
+                </div>
+            </div>
+            <div id="ledger-list" class="ledger-list">
+                <p class="empty-message">尚無記帳資料</p>
+            </div>
+        </section>
+
+        <!-- 同步狀態提示 -->
+        <div id="sync-status" class="sync-status" style="display: none;"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
