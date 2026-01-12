@@ -191,7 +191,7 @@ function signInWithGoogle() {
 
     // 使用 OAuth 2.0 Token 客戶端
     const tokenClient = window.google.accounts.oauth2.initTokenClient({
-        client_id: 'YOUR_CLIENT_ID', // 請替換為您的 Client ID
+        client_id: '426607376722-jm76p89q30er3p11qto96tipo4i3ds00.apps.googleusercontent.com', // 請替換為您的 Client ID
         scope: 'https://www.googleapis.com/auth/drive.file',
         callback: async (tokenResponse) => {
             if (tokenResponse.error) {
