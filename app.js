@@ -276,17 +276,14 @@ async function createDriveFile() {
     try {
         showSyncStatus('正在建立 Drive 檔案...', 'syncing');
 
-        // 取得本地所有資料
         const ledgers = await getAllLedgersFromDB();
         const fileContent = JSON.stringify(ledgers, null, 2);
 
-        // 使用 Google Drive API 建立檔案
         const metadata = {
             name: DRIVE_FILE_NAME,
-            parents: [] // 空陣列表示使用應用程式資料資料夾（appDataFolder）
+            parents: ['appDataFolder']  // 關鍵修正
         };
 
-        // 建立檔案中繼資料
         const createResponse = await gapi.client.drive.files.create({
             resource: metadata,
             fields: 'id'
@@ -294,7 +291,6 @@ async function createDriveFile() {
 
         driveFileId = createResponse.result.id;
 
-        // 上傳檔案內容
         const uploadResponse = await fetch(
             `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
             {
@@ -311,11 +307,7 @@ async function createDriveFile() {
             throw new Error('上傳檔案內容失敗');
         }
 
-        console.log('Drive 檔案建立成功:', driveFileId);
         showSyncStatus('同步成功', 'success');
-        setTimeout(() => {
-            document.getElementById('sync-status').style.display = 'none';
-        }, 3000);
     } catch (error) {
         console.error('建立 Drive 檔案失敗', error);
         showSyncStatus('同步失敗', 'error');
@@ -989,5 +981,6 @@ async function init() {
 
 // 頁面載入完成後初始化
 document.addEventListener('DOMContentLoaded', init);
+
 
 
